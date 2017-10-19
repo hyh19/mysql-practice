@@ -214,13 +214,120 @@ mysql> \. filename
 
 ## Chapter 4 MySQL Programs ([5.6](https://dev.mysql.com/doc/refman/5.6/en/programs.html))
 
+### 4.2 Using MySQL Programs ([5.6](https://dev.mysql.com/doc/refman/5.6/en/programs-using.html))
+
+#### 4.2.2 Connecting to the MySQL Server ([5.6](https://dev.mysql.com/doc/refman/5.6/en/connecting.html))
+
+```
+$ mysql --host=localhost --user=myname --password mydb
+$ mysql -h localhost -u myname -p mydb
+```
+
+You can specify connection parameters in the `[client]` section of an option file. The relevant section of the file might look like this:
+
+```
+[client]
+host=host_name
+user=user_name
+password=your_pass
+```
+
+#### 4.2.6 Using Option Files ([5.6](https://dev.mysql.com/doc/refman/5.6/en/option-files.html))
+
+To determine whether a program reads option files, invoke it with the `--help` option. (For `mysqld`, use `--verbose` and `--help`.) If the program reads option files, the help message indicates which files it looks for and which option groups it recognizes.
+
+**Option Files Read on Unix and Unix-Like Systems**
+File Name | Purpose
+---|---
+/etc/my.cnf	| Global options
+/etc/mysql/my.cnf | Global options
+SYSCONFDIR/my.cnf | Global options
+$MYSQL_HOME/my.cnf | Server-specific options (server only)
+defaults-extra-file	| The file specified with --defaults-extra-file, if any
+~/.my.cnf | User-specific options
+~/.mylogin.cnf | User-specific login path options (clients only)
+
+#### 4.2.7 Command-Line Options that Affect Option-File Handling ([5.6](https://dev.mysql.com/doc/refman/5.6/en/option-file-options.html))
+
+Most MySQL programs that support option files handle the following options. Because these options affect option-file handling, they must be given on the command line and not in an option file. To work properly, each of these options must be given before other options.
+
+- `--defaults-extra-file=file_name`
+
+- `--defaults-file=file_name`
+
+- `--no-defaults`
+
+#### 4.2.8 Using Options to Set Program Variables ([5.6](https://dev.mysql.com/doc/refman/5.6/en/program-variables.html))
+
+Many MySQL programs have internal variables that can be set at runtime using the `SET` statement.
+
+Most of these program variables also can be set at server startup by using the same syntax that applies to specifying program options. 
+
+```
+$ mysql --max_allowed_packet=16777216
+$ mysql --max_allowed_packet=16M
+```
+
+### 4.3 MySQL Server and Server-Startup Programs ([5.6](https://dev.mysql.com/doc/refman/5.6/en/programs-server.html))
+
+#### 4.3.1 `mysqld` — The MySQL Server ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysqld.html))
+
+`mysqld`, also known as MySQL Server, is the main program that does most of the work in a MySQL installation. MySQL Server manages access to the MySQL data directory that contains databases and tables. **The data directory is also the default location for other information such as log files and status files.**
+
+The `mysqld` program has many options that can be specified at startup. For a complete list of options, run this command:
+```
+$ mysqld --verbose --help
+```
+
+#### 4.3.2 `mysqld_safe` — MySQL Server Startup Script ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysqld-safe.html))
+
+`mysqld_safe` reads all options from the `[mysqld]`, `[server]`, and `[mysqld_safe]` sections in option files.
+
+**`mysqld_safe` Options**
+Format | Description
+---|---
+--basedir | Path to MySQL installation directory
+--datadir | Path to data directory
+--defaults-extra-file | Read named option file in addition to usual option files
+--defaults-file	| Read only named option file
+--help | Display help message and exit
+--log-error	| Write error log to named file
+--no-defaults | Read no option files
+--pid-file | Path name of server process ID file
+--port | Port number on which to listen for TCP/IP connections
+--socket | Socket file on which to listen for Unix socket connections
+--user | Run mysqld as user having name user_name or numeric user ID user_id
+
+### 4.4 MySQL Installation-Related Programs ([5.6](https://dev.mysql.com/doc/refman/5.6/en/programs-installation.html))
+
+#### 4.4.3 `mysql_install_db` — Initialize MySQL Data Directory ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysql-install-db.html))
+
+As of MySQL 5.6.8, on Unix platforms, `mysql_install_db` creates a default option file named `my.cnf` in the base installation directory. This file is created from a template included in the distribution package named `my-default.cnf`. You can find the template in or under the base installation directory. When started using `mysqld_safe`, the server uses `my.cnf` file by default. If `my.cnf` already exists, `mysql_install_db` assumes it to be in use and writes a new file named `my-new.cnf` instead.
+
+**`mysql_install_db` Options**
+
+Format | Description
+---|---
+--basedir | Path to base directory
+--datadir | Path to data directory
+--defaults-extra-file | Read named option file in addition to usual option files
+--defaults-file	| Read only named option file
+--force	| Run even if DNS does not work	 
+--help | Display help message and exit
+--keep-my-cnf | Keep existing my.cnf file, do not create new one
+--no-defaults | Read no option files
+--skip-name-resolve	| Use IP addresses rather than host names in grant tables
+--user | System login user under which to execute mysqld
+
+#### 4.4.5 `mysql_secure_installation` — Improve MySQL Installation Security ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysql-secure-installation.html))
+
+```
+$ mysql_secure_installation
+```
+
 ### 4.5 MySQL Client Programs ([5.6](https://dev.mysql.com/doc/refman/5.6/en/programs-client.html))
 
 #### 4.5.1 `mysql` — The MySQL Command-Line Tool ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysql.html))
-
-```
-$ mysql db_name
-```
 
 ```
 $ mysql --user=user_name --password db_name
@@ -248,6 +355,157 @@ Format | Description
 --socket | For connections to localhost, the Unix socket file or Windows named pipe to use
 --user | MySQL user name to use when connecting to server
 --version | Display version information and exit
+
+##### 4.5.1.2 `mysql` Commands ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysql-commands.html))
+
+```
+mysql> help
+
+List of all MySQL commands:
+Note that all text commands must be first on line and end with ';'
+?         (\?) Synonym for `help'.
+clear     (\c) Clear command.
+connect   (\r) Reconnect to the server. Optional arguments are db and host.
+delimiter (\d) Set statement delimiter.
+exit      (\q) Exit mysql. Same as quit.
+help      (\h) Display this help.
+quit      (\q) Quit mysql.
+source    (\.) Execute an SQL script file. Takes a file name as an argument.
+status    (\s) Get status information from the server.
+system    (\!) Execute a system shell command.
+use       (\u) Use another database. Takes database name as argument.
+
+For server side help, type 'help contents'
+```
+
+##### 4.5.1.3 `mysql` Logging ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysql-logging.html))
+
+On Unix, the `mysql` client logs statements executed interactively to a history file. By default, this file is named `.mysql_history` in your home directory. To specify a different file, set the value of the `MYSQL_HISTFILE` environment variable.
+
+##### 4.5.1.4 `mysql` Server-Side Help ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysql-server-side-help.html))
+
+```
+mysql> help contents
+You asked for help about help category: "Contents"
+For more information, type 'help <item>', where <item> is one of the
+following categories:
+   Account Management
+   Administration
+   Data Definition
+   Data Manipulation
+   Data Types
+   Functions
+   Functions and Modifiers for Use with GROUP BY
+   Geographic Features
+   Language Structure
+   Plugins
+   Storage Engines
+   Stored Routines
+   Table Maintenance
+   Transactions
+   Triggers
+```
+
+##### 4.5.1.5 Executing SQL Statements from a Text File ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysql-batch-commands.html))
+
+```
+$ mysql db_name < text_file
+```
+
+```
+mysql> source file_name
+mysql> \. file_name
+```
+
+#### 4.5.2 `mysqladmin` — Client for Administering a MySQL Server ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysqladmin.html))
+
+```
+$ mysqladmin [options] command [command-arg] [command [command-arg]] ...
+```
+
+Format | Description
+---|---
+create db_name | Create a new database named db_name.
+drop db_name | Delete the database named db_name and all its tables.
+extended-status | Display the server status variables and their values.
+flush-privileges | Reload the grant tables (same as reload).
+ping | Check whether the server is available.
+processlist | Show a list of active server threads.
+reload | Reload the grant tables.
+shutdown | Stop the server.
+start-slave | Start replication on a slave server.
+status | Display a short server status message.
+stop-slave | Stop replication on a slave server.
+variables | Display the server system variables and their values.
+version | Display version information from the server.
+
+#### 4.5.4 `mysqldump` — A Database Backup Program ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysqldump.html))
+
+To make a backup of an entire database:
+```
+$ mysqldump db_name > backup-file.sql
+```
+
+To load the dump file back into the server:
+```
+$ mysql db_name < backup-file.sql
+```
+
+Another way to reload the dump file:
+```
+$ mysql -e "source /path-to-backup/backup-file.sql" db_name
+```
+
+`mysqldump` is also very useful for populating databases by copying data from one MySQL server to another:
+```
+$ mysqldump --opt db_name | mysql --host=remote_host -C db_name
+```
+
+You can dump several databases with one command:
+```
+$ mysqldump --databases db_name1 [db_name2 ...] > my_databases.sql
+```
+
+To dump all databases, use the `--all-databases` option:
+```
+$ mysqldump --all-databases > all_databases.sql
+```
+
+#### 4.5.6 `mysqlshow` — Display Database, Table, and Column Information ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysqlshow.html))
+
+The `mysqlshow` client can be used to quickly see which databases exist, their tables, or a table's columns or indexes.
+
+```
+$ mysqlshow [options] [db_name [tbl_name [col_name]]]
+```
+
+### 4.6 MySQL Administrative and Utility Programs ([5.6](https://dev.mysql.com/doc/refman/5.6/en/programs-admin-utils.html))
+
+#### 4.6.8 `mysqlbinlog` — Utility for Processing Binary Log Files ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysqlbinlog.html))
+
+The server's binary log consists of files containing “events” that describe modifications to database contents. The server writes these files in binary format. To display their contents in text format, use the `mysqlbinlog` utility. You can also use `mysqlbinlog` to display the contents of relay log files written by a slave server in a replication setup because relay logs have the same format as binary logs. 
+
+```
+$ mysqlbinlog [options] log_file ...
+```
+
+#### 4.6.9 `mysqldumpslow` — Summarize Slow Query Log Files ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysqldumpslow.html))
+
+The MySQL slow query log contains information about queries that take a long time to execute. `mysqldumpslow` parses MySQL slow query log files and prints a summary of their contents.
+
+```
+$ mysqldumpslow [options] [log_file ...]
+```
+
+### 4.9 MySQL Program Environment Variables ([5.6](https://dev.mysql.com/doc/refman/5.6/en/environment-variables.html))
+
+
+Variable | Description
+---|---
+MYSQL_HISTFILE | The path to the mysql history file. If this variable is set, its value overrides the default for $HOME/.mysql_history.
+MYSQL_HISTIGNORE | Patterns specifying statements not to log to $HOME/.mysql_history.
+MYSQL_HOME | The path to the directory in which the server-specific my.cnf file resides.
+MYSQL_HOST | The default host name used by the mysql command-line client.
 
 ---
 
