@@ -41,9 +41,9 @@ shell< mysql < employees.sql
 ```bash
 ## CentOS 6.9/7.3 ##
 
-shell> curl -L url | sh
+$ curl -L url | sh
 # Check whether the data directory is initialiazed
-shell> ls -al /var/lib/mysql
+$ ls -al /var/lib/mysql
 ```
 
 #### 2.5.3 Installing MySQL on Linux Using the MySQL APT Repository ([5.6](https://dev.mysql.com/doc/refman/5.6/en/linux-installation-apt-repo.html), [5.7](https://dev.mysql.com/doc/refman/5.7/en/linux-installation-apt-repo.html))
@@ -54,20 +54,20 @@ shell> ls -al /var/lib/mysql
 
 ```bash
 ## Ubuntu 14.04/16.04/17.04, Debian 7.11/8.9/9.1 ##
-shell> wget https://repo.mysql.com//mysql-apt-config_0.8.7-1_all.deb
-shell> sudo dpkg -i mysql-apt-config_0.8.7-1_all.deb
+$ wget https://repo.mysql.com//mysql-apt-config_0.8.7-1_all.deb
+$ sudo dpkg -i mysql-apt-config_0.8.7-1_all.deb
 
 ## Configuring mysql-apt-config ##
 # Ubuntu 16.04/17.04 only has MySQL >=5.7
 
-shell> sudo apt-get update
-shell> sudo apt-get install -y mysql-server
+$ sudo apt-get update
+$ sudo apt-get install -y mysql-server
 
 ## Configuring mysql-community-server ##
 
 ## Switch to another supported major release series at any time ##
-shell> sudo dpkg-reconfigure mysql-apt-config
-shell> sudo apt-get update
+$ sudo dpkg-reconfigure mysql-apt-config
+$ sudo apt-get update
 ```
 
 ### 2.10 Postinstallation Setup and Testing ([5.6](https://dev.mysql.com/doc/refman/5.6/en/postinstallation.html), [5.7](https://dev.mysql.com/doc/refman/5.7/en/postinstallation.html))
@@ -80,10 +80,10 @@ shell> sudo apt-get update
 
 ```bash
 ## CentOS 6.9/7.3 ##
-shell> mysql_install_db --user=mysql
+$ mysql_install_db --user=mysql
 
 # Check whether the data directory is initialiazed.
-shell> ls -al /var/lib/mysql
+$ ls -al /var/lib/mysql
 ```
 
 [`mysql_install_db`](https://dev.mysql.com/doc/refman/5.6/en/mysql-install-db.html) — Initialize MySQL Data Directory 
@@ -96,10 +96,10 @@ shell> ls -al /var/lib/mysql
 
 ```bash
 ## CentOS 6.9/7.3 ##
-shell> mysqld --initialize-insecure --user=mysql
+$ mysqld --initialize-insecure --user=mysql
 
 # Check whether the data directory is initialiazed.
-shell> ls -al /var/lib/mysql
+$ ls -al /var/lib/mysql
 ```
 
 ###### [2.10.1.2 Initializing the Data Directory Manually Using mysql_install_db](https://dev.mysql.com/doc/refman/5.7/en/data-directory-initialization-mysql-install-db.html)
@@ -109,31 +109,31 @@ shell> ls -al /var/lib/mysql
 Start the server
 ```bash
 ## CentOS 6.9, Ubuntu 14.04, Debian 7.11/8.9(MySQL 5.6)/9.1(MySQL 5.6) ##
-shell> mysqld_safe --user=mysql &
+$ mysqld_safe --user=mysql &
 
 ## CentOS 6.9, Ubuntu 14.04/16.04/17.04, Debian 7.11/8.9/9.1 ##
-shell> service mysql start
+$ service mysql start
 
 ## CentOS 7.3 ##
-shell> systemctl start mysqld
+$ systemctl start mysqld
 
 ## Ubuntu 16.04/17.04, Debian 8.9/9.1 ##
-shell> systemctl start mysql
+$ systemctl start mysql
 ```
 
 Shut down the server
 ```bash
 ## CentOS 6.9, Ubuntu 14.04/16.04/17.04, Debian 7.11/8.9/9.1 ##
-shell> mysqladmin -u root shutdown
+$ mysqladmin -u root shutdown
 
 ## CentOS 6.9, Ubuntu 14.04/16.04/17.04, Debian 7.11/8.9/9.1 ##
-shell> service mysql stop
+$ service mysql stop
 
 ## CentOS 7.3 ##
-shell> systemctl stop mysqld
+$ systemctl stop mysqld
 
 ## Ubuntu 16.04/17.04, Debian 8.9/9.1 ##
-shell> systemctl stop mysql
+$ systemctl stop mysql
 ```
 
 `mysqld_safe` — MySQL Server Startup Script ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysqld-safe.html), [5.7](https://dev.mysql.com/doc/refman/5.7/en/mysqld-safe.html))
@@ -143,23 +143,23 @@ shell> systemctl stop mysql
 Simple tests to check whether the server is up and responding to connections
 ```bash
 ## CentOS 6.9/7.3, Ubuntu 14.04/16.04/17.04, Debian 7.11/8.9/9.1 ##
-shell> mysqladmin version
-shell> mysqladmin variables
+$ mysqladmin version
+$ mysqladmin variables
 ```
 
 Verify that you can retrieve information from the server
 ```bash
 ## CentOS 6.9/7.3, Ubuntu 14.04/16.04/17.04, Debian 7.11/8.9/9.1 ##
-shell> mysqlshow
-shell> mysqlshow mysql
-shell> mysql -e "SELECT User, Host, plugin FROM mysql.user" mysql
+$ mysqlshow
+$ mysqlshow mysql
+$ mysql -e "SELECT User, Host, plugin FROM mysql.user" mysql
 ```
 
 #### 2.10.4 Securing the Initial MySQL Accounts ([5.6](https://dev.mysql.com/doc/refman/5.6/en/default-privileges.html), [5.7](https://dev.mysql.com/doc/refman/5.7/en/default-privileges.html))
 
 ```bash
 ## CentOS 6.9/7.3, Ubuntu 14.04/16.04/17.04, Debian 7.11/8.9/9.1 ##
-shell> mysql_secure_installation
+$ mysql_secure_installation
 ```
 
 `mysql_secure_installation` — Improve MySQL Installation Security ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysql-secure-installation.html), [5.7](https://dev.mysql.com/doc/refman/5.7/en/mysql-secure-installation.html))
@@ -171,12 +171,12 @@ shell> mysql_secure_installation
 ### 3.1 Connecting to and Disconnecting from the Server ([5.6](https://dev.mysql.com/doc/refman/5.6/en/connecting-disconnecting.html), [5.7](https://dev.mysql.com/doc/refman/5.7/en/connecting-disconnecting.html))
 
 ```bash
-shell> mysql -h host -u user -p
+$ mysql -h host -u user -p
 ```
 
 If you are logging in on the same machine that MySQL is running on, you can omit the host, and simply use the following:
 ```bash
-shell> mysql -u user -p
+$ mysql -u user -p
 ```
 
 After you have connected successfully, you can disconnect any time by typing QUIT (or \q) at the mysql> prompt:
@@ -202,13 +202,52 @@ mysql> DESCRIBE pet;
 ### 3.5 Using mysql in Batch Mode ([5.6](https://dev.mysql.com/doc/refman/5.6/en/batch-mode.html), [5.7](https://dev.mysql.com/doc/refman/5.7/en/batch-mode.html))
 
 ```bash
-shell> mysql -h host -u user -p < batch-file
+$ mysql -h host -u user -p < batch-file
 ```
 
 ```bash
 mysql> source filename;
 mysql> \. filename
 ```
+
+---
+
+## Chapter 4 MySQL Programs ([5.6](https://dev.mysql.com/doc/refman/5.6/en/programs.html))
+
+### 4.5 MySQL Client Programs ([5.6](https://dev.mysql.com/doc/refman/5.6/en/programs-client.html))
+
+#### 4.5.1 `mysql` — The MySQL Command-Line Tool ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysql.html))
+
+```
+$ mysql db_name
+```
+
+```
+$ mysql --user=user_name --password db_name
+```
+
+```
+$ mysql db_name < script.sql > output.tab
+```
+
+##### 4.5.1.1 `mysql` Options ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysql-command-options.html))
+
+`mysql` supports the following options, which can be specified on the command line or in the `[mysql]` and `[client]` groups of an option file. 
+
+Format | Description
+---|---
+--database | The database to use
+--defaults-extra-file | Read named option file in addition to usual option files
+--defaults-file	| Read only named option file
+--execute | Execute the statement and quit
+--help | Display help message and exit
+--host | Connect to MySQL server on given host
+--no-defaults | Read no option files
+--password | Password to use when connecting to server
+--port | TCP/IP port number to use for connection
+--socket | For connections to localhost, the Unix socket file or Windows named pipe to use
+--user | MySQL user name to use when connecting to server
+--version | Display version information and exit
 
 ---
 
@@ -220,7 +259,7 @@ mysql> \. filename
 
 To determine the command option and system variable values used by the server, execute this command:
 ```bash
-shell> mysqld --verbose --help
+$ mysqld --verbose --help
 ```
 
 To see the current system variable values used by the server as it runs, connect to it and execute this statement:
@@ -235,8 +274,8 @@ mysql> SHOW STATUS;
 
 System variable and status information also is available using the mysqladmin command:
 ```bash
-shell> mysqladmin variables
-shell> mysqladmin extended-status
+$ mysqladmin variables
+$ mysqladmin extended-status
 ```
 
 #### 5.1.2 Server Configuration Defaults ([5.6](https://dev.mysql.com/doc/refman/5.6/en/server-configuration-defaults.html), [5.7](https://dev.mysql.com/doc/refman/5.7/en/server-configuration-defaults.html))
@@ -246,7 +285,7 @@ shell> mysqladmin extended-status
 #### 5.1.4 Server Command Options ([5.6](https://dev.mysql.com/doc/refman/5.6/en/server-options.html), [5.7](https://dev.mysql.com/doc/refman/5.7/en/server-options.html))
 
 ```bash
-shell> mysqld --verbose --help
+$ mysqld --verbose --help
 ```
 
 #### 5.1.5 Server System Variables ([5.6](https://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html), [5.7](https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html))
@@ -352,18 +391,18 @@ To tell the server to reload the grant tables, perform a flush-privileges operat
 
 To connect to a MySQL server with a command-line client, specify user name and password options as necessary for the account that you want to use:
 ```bash
-shell> mysql --user=finley --password db_name
+$ mysql --user=finley --password db_name
 ```
 
 If you prefer short options, the command looks like this:
 ```bash
-shell> mysql -u finley -p db_name
+$ mysql -u finley -p db_name
 ```
 
 If you omit the password value following the --password or -p option on the command line (as just shown), the client prompts for one. Alternatively, the password can be specified on the command line:
 ```bash
-shell> mysql --user=finley --password=password db_name
-shell> mysql -u finley -ppassword db_name
+$ mysql --user=finley --password=password db_name
+$ mysql -u finley -ppassword db_name
 ```
 If you use the -p option, there must be no space between -p and the following password value.
 
@@ -476,7 +515,7 @@ mysql> GRANT USAGE ON *.* TO 'jeffrey'@'localhost' IDENTIFIED BY 'mypass';
 
 To change an account password from the command line, use the mysqladmin command:
 ```bash
-shell> mysqladmin -u user_name -h host_name password "new_password"
+$ mysqladmin -u user_name -h host_name password "new_password"
 ```
 
 #### 6.3.6 Password Expiration and Sandbox Mode ([5.6](https://dev.mysql.com/doc/refman/5.6/en/password-expiration-sandbox-mode.html), [5.7](https://dev.mysql.com/doc/refman/5.7/en/password-expiration-sandbox-mode.html))
