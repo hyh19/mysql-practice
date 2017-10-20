@@ -12,10 +12,10 @@ mysql_version="${2}"
 repo_file_name=""
 
 # 源安装文件下载地址
-repo_file_url="https://repo.mysql.com/${repo_file_name}"
+repo_file_url=""
 
 # 源安装文件保存路径
-repo_file_path="/tmp/${repo_file_name}"
+repo_file_path=""
 
 # 根据 CentOS 版本确定源安装文件名
 function set_repo_file_name() {
@@ -27,6 +27,9 @@ function set_repo_file_name() {
             repo_file_name="mysql57-community-release-el7-11.noarch.rpm"
             ;;
     esac
+    
+    repo_file_url="https://repo.mysql.com/${repo_file_name}"
+    repo_file_path="/tmp/${repo_file_name}"
 }
 
 # 下载源安装文件
