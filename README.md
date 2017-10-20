@@ -785,4 +785,84 @@ mysql> ALTER USER 'myuser'@'localhost' PASSWORD EXPIRE;
 
 ## Chapter 11 Data Types ([5.6](https://dev.mysql.com/doc/refman/5.6/en/data-types.html), [5.7](https://dev.mysql.com/doc/refman/5.7/en/data-types.html))
 
+## Chapter 17 Replication ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication.html))
 
+### 17.1 Replication Configuration ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication-configuration.html))
+
+#### 17.1.1 How to Set Up Replication ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication-howto.html))
+
+##### 17.1.1.1 Setting the Replication Master Configuration ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication-howto-masterbaseconfig.html))
+
+```
+# Master
+[mysqld]
+log-bin=mysql-bin
+server-id=1
+```
+After making the changes, restart the server.
+
+##### 17.1.1.2 Setting the Replication Slave Configuration ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication-howto-slavebaseconfig.html))
+
+```
+# Slave
+[mysqld]
+server-id=2
+```
+After making the changes, restart the server.
+
+##### 17.1.1.3 Creating a User for Replication ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication-howto-repuser.html))
+
+```
+# Master
+mysql> CREATE USER 'repl'@'%.mydomain.com' IDENTIFIED BY 'slavepass';
+mysql> GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%.mydomain.com';
+```
+
+##### 17.1.1.4 Obtaining the Replication Master Binary Log Coordinates ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication-howto-masterstatus.html))
+
+To obtain the master binary log coordinates, follow these steps:
+
+Start a session on the master by connecting to it with the command-line client, and flush all tables and block write statements by executing the `FLUSH TABLES WITH READ LOCK` statement:
+```
+# Master
+mysql> FLUSH TABLES WITH READ LOCK;
+```
+
+> **Warning**
+> Leave the client from which you issued the `FLUSH TABLES` statement running so that the read lock remains in effect. If you exit the client, the lock is released.
+
+
+**In a different session** on the master, use the `SHOW MASTER STATUS` statement to determine the current binary log file name and position:
+```
+# Master
+mysql > SHOW MASTER STATUS;
++------------------+----------+--------------+------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB |
++------------------+----------+--------------+------------------+
+| mysql-bin.000003 | 73       | test         | manual,mysql     |
++------------------+----------+--------------+------------------+
+```
+
+##### 17.1.1.5 Creating a Data Snapshot Using `mysqldump` ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication-howto-mysqldump.html))
+
+```
+# Master
+$ mysqldump --all-databases --master-data > dbdump.db
+```
+
+```
+# Master
+mysql> UNLOCK TABLES;
+```
+
+##### 17.1.1.8 Setting Up Replication with Existing Data ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication-howto-existingdata.html))
+
+```
+# Slave
+$ mysql < fulldb.dump
+```
+
+```
+# Slave
+mysql> START SLAVE;
+```
