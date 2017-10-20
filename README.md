@@ -836,11 +836,6 @@ mysql> FLUSH TABLES WITH READ LOCK;
 ```
 # Master
 mysql > SHOW MASTER STATUS;
-+------------------+----------+--------------+------------------+
-| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB |
-+------------------+----------+--------------+------------------+
-| mysql-bin.000003 | 73       | test         | manual,mysql     |
-+------------------+----------+--------------+------------------+
 ```
 
 ##### 17.1.1.5 Creating a Data Snapshot Using `mysqldump` ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication-howto-mysqldump.html))
