@@ -39,6 +39,7 @@ function download_repo_file() {
     then
         rm -f "${repo_file_path}"
     fi
+    yum install wget -y
     wget -O "${repo_file_path}" "${repo_file_url}"
 }
 
