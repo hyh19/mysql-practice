@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## 全局变量 ##
+## CentOS 6.9/7.4 ##
 
 # CentOS 版本
 centos_release="${1}"
