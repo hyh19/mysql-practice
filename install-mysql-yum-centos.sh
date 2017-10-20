@@ -67,11 +67,11 @@ function print_usage() {
 
 # 脚本主函数
 function main() {
-    if [ "#{centos_release}" == "centos6" -o "#{centos_release}" == "centos7" ]
+    if [ "${centos_release}" == "centos6" -o "${centos_release}" == "centos7" ]
     then
         # 确定源安装文件名
         set_repo_file_name
-        if [ "#{mysql_version}" == "mysql56" -o "#{mysql_version}" == "mysql57" ]
+        if [ "${mysql_version}" == "mysql56" -o "${mysql_version}" == "mysql57" ]
         then
             download_repo_file
             install_mysql
