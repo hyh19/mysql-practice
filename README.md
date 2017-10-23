@@ -30,20 +30,9 @@ shell< mysql < employees.sql
 
 [A Quick Guide to Using the MySQL Yum Repository](https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/)
 
-[install-mysql-server-56-yum-centos69.sh](https://gist.github.com/mrhuangyuhui/00b61205dd36cb6c27d63742f29adc4d#file-install-mysql-server-56-yum-centos69-sh)
-    
-[install-mysql-server-56-yum-centos73.sh](https://gist.github.com/mrhuangyuhui/00b61205dd36cb6c27d63742f29adc4d#file-install-mysql-server-56-yum-centos73-sh)
-
-[install-mysql-server-57-yum-centos69.sh](https://gist.github.com/mrhuangyuhui/00b61205dd36cb6c27d63742f29adc4d#file-install-mysql-server-57-yum-centos69-sh)
-    
-[install-mysql-server-57-yum-centos73.sh](https://gist.github.com/mrhuangyuhui/00b61205dd36cb6c27d63742f29adc4d#file-install-mysql-server-57-yum-centos73-sh)
-
+**[install-mysql-yum-centos.sh](https://github.com/mrhuangyuhui/mysql-practice/blob/master/install-mysql-yum-centos.sh)**
 ```bash
-## CentOS 6.9/7.3 ##
-
-$ curl -L url | sh
-# Check whether the data directory is initialiazed
-$ ls -al /var/lib/mysql
+./install-mysql-yum-centos.sh centos6 mysql56
 ```
 
 #### 2.5.3 Installing MySQL on Linux Using the MySQL APT Repository ([5.6](https://dev.mysql.com/doc/refman/5.6/en/linux-installation-apt-repo.html), [5.7](https://dev.mysql.com/doc/refman/5.7/en/linux-installation-apt-repo.html))
@@ -80,10 +69,7 @@ $ sudo apt-get update
 
 ```bash
 ## CentOS 6.9/7.3 ##
-$ mysql_install_db --user=mysql
-
-# Check whether the data directory is initialiazed.
-$ ls -al /var/lib/mysql
+mysql_install_db --user=mysql
 ```
 
 [`mysql_install_db`](https://dev.mysql.com/doc/refman/5.6/en/mysql-install-db.html) — Initialize MySQL Data Directory 
@@ -109,31 +95,31 @@ $ ls -al /var/lib/mysql
 Start the server
 ```bash
 ## CentOS 6.9, Ubuntu 14.04, Debian 7.11/8.9(MySQL 5.6)/9.1(MySQL 5.6) ##
-$ mysqld_safe --user=mysql &
+mysqld_safe --user=mysql &
 
 ## CentOS 6.9, Ubuntu 14.04/16.04/17.04, Debian 7.11/8.9/9.1 ##
-$ service mysql start
+service mysql start
 
 ## CentOS 7.3 ##
-$ systemctl start mysqld
+systemctl start mysqld
 
 ## Ubuntu 16.04/17.04, Debian 8.9/9.1 ##
-$ systemctl start mysql
+systemctl start mysql
 ```
 
 Shut down the server
 ```bash
 ## CentOS 6.9, Ubuntu 14.04/16.04/17.04, Debian 7.11/8.9/9.1 ##
-$ mysqladmin -u root shutdown
+mysqladmin -u root shutdown
 
 ## CentOS 6.9, Ubuntu 14.04/16.04/17.04, Debian 7.11/8.9/9.1 ##
-$ service mysql stop
+service mysql stop
 
 ## CentOS 7.3 ##
-$ systemctl stop mysqld
+systemctl stop mysqld
 
 ## Ubuntu 16.04/17.04, Debian 8.9/9.1 ##
-$ systemctl stop mysql
+systemctl stop mysql
 ```
 
 `mysqld_safe` — MySQL Server Startup Script ([5.6](https://dev.mysql.com/doc/refman/5.6/en/mysqld-safe.html), [5.7](https://dev.mysql.com/doc/refman/5.7/en/mysqld-safe.html))
@@ -787,6 +773,69 @@ mysql> ALTER USER 'myuser'@'localhost' PASSWORD EXPIRE;
 
 ## Chapter 17 Replication ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication.html))
 
+### Quick Start
+
+- **Master**
+
+```
+# my.cnf
+[mysqld]
+log-bin=mysql-bin
+server-id=1
+```
+
+```
+# Session 1
+CREATE USER 'repl'@'%' IDENTIFIED BY '666666';
+GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';
+```
+
+```
+# Session 1
+FLUSH TABLES WITH READ LOCK;
+```
+
+```
+# Session 2
+SHOW MASTER STATUS;
+```
+
+```bash
+mysqldump --all-databases --master-data > dbdump.db
+```
+
+```
+# Session 1
+UNLOCK TABLES;
+```
+
+- **Slave**
+
+```bash
+mysql < dbdump.db
+```
+
+```
+CHANGE MASTER TO \
+MASTER_HOST='128.199.177.76', \
+MASTER_USER='repl', \
+MASTER_PASSWORD='666666', \
+MASTER_LOG_FILE='mysql-bin.000001', \
+MASTER_LOG_POS=411;
+```
+
+```
+START SLAVE;
+```
+
+```
+SHOW SLAVE STATUS \G;
+
+Slave_IO_Running: Yes
+Slave_SQL_Running: Yes
+Seconds_Behind_Master: 0
+```
+
 ### 17.1 Replication Configuration ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication-configuration.html))
 
 #### 17.1.1 How to Set Up Replication ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication-howto.html))
@@ -835,14 +884,14 @@ mysql> FLUSH TABLES WITH READ LOCK;
 **In a different session** on the master, use the `SHOW MASTER STATUS` statement to determine the current binary log file name and position:
 ```
 # Master
-mysql > SHOW MASTER STATUS;
+mysql> SHOW MASTER STATUS;
 ```
 
 ##### 17.1.1.5 Creating a Data Snapshot Using `mysqldump` ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication-howto-mysqldump.html))
 
-```
+```bash
 # Master
-$ mysqldump --all-databases --master-data > dbdump.db
+mysqldump --all-databases --master-data > dbdump.db
 ```
 
 ```
@@ -852,12 +901,23 @@ mysql> UNLOCK TABLES;
 
 ##### 17.1.1.8 Setting Up Replication with Existing Data ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication-howto-existingdata.html))
 
-```
+```bash
 # Slave
-$ mysql < fulldb.dump
+mysql < fulldb.dump
 ```
 
 ```
 # Slave
 mysql> START SLAVE;
+```
+
+##### 17.1.1.10 Setting the Master Configuration on the Slave ([5.6](https://dev.mysql.com/doc/refman/5.6/en/replication-howto-slaveinit.html))
+
+```
+mysql> CHANGE MASTER TO
+    ->     MASTER_HOST='master_host_name',
+    ->     MASTER_USER='replication_user_name',
+    ->     MASTER_PASSWORD='replication_password',
+    ->     MASTER_LOG_FILE='recorded_log_file_name',
+    ->     MASTER_LOG_POS=recorded_log_position;
 ```
